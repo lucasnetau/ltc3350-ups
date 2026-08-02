@@ -1,0 +1,12 @@
+[Unit]
+Description=Monitor SuperCAP UPS
+After=multi-user.target
+
+[Service]
+WorkingDirectory=/var/lib/ups/
+Type=simple
+Restart=always
+ExecStart=/usr/bin/python3 /usr/lib/ups/monitor-ups.py
+
+[Install]
+WantedBy=multi-user.target

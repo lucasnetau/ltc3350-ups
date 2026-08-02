@@ -1,0 +1,8 @@
+[Unit]
+Description=SuperCAP UPS health check
+After=multi-user.target
+
+[Service]
+WorkingDirectory=/var/lib/ups/
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/lib/ups/monitor-ups-health.py --out /var/lib/ups/health.json
