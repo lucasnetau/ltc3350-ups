@@ -44,20 +44,19 @@ CURRENT_LSB_UV = 1.983
 REG_CLR_ALARMS = 0x00
 REG_MSK_ALARMS = 0x01
 REG_MSK_MON_STATUS = 0x02
-REG_RESET_TIMER = 0x03
 REG_CAP_ESR_PER = 0x04
 REG_VCAPFB_DAC = 0x05
 REG_VSHUNT = 0x06
-REG_VIN_UV = 0x07
-REG_VIN_OV = 0x08
-REG_VCAP_UV = 0x09
-REG_VCAP_OV = 0x0A
-REG_CAP_UV = 0x0B
-REG_CAP_OV = 0x0C
-REG_VOUT_UV = 0x0D
-REG_VOUT_OV = 0x0E
-REG_GPI_UV = 0x0F
-REG_GPI_OV = 0x10
+REG_CAP_UV = 0x07
+REG_CAP_OV = 0x08
+REG_GPI_UV = 0x09
+REG_GPI_OV = 0x0A
+REG_VIN_UV = 0x0B
+REG_VIN_OV = 0x0C
+REG_VCAP_UV = 0x0D
+REG_VCAP_OV = 0x0E
+REG_VOUT_UV = 0x0F
+REG_VOUT_OV = 0x10
 REG_IIN_OC_LIMIT = 0x11
 REG_ICHG_UC_LIMIT = 0x12
 REG_TEMP_COLD = 0x13
@@ -320,6 +319,28 @@ def _self_check() -> None:
     assert ltc.signed16(65525) == -11
     assert ltc.num_capacitors(0) == 1
     assert ltc.num_capacitors(3) == 4
+
+    # Register map pinned to the datasheet table (page 32) and the
+    # mainline ltc3350-charger driver; these must never be reordered.
+    regs = {
+        REG_CLR_ALARMS: 0x00, REG_MSK_ALARMS: 0x01, REG_MSK_MON_STATUS: 0x02,
+        REG_CAP_ESR_PER: 0x04, REG_VCAPFB_DAC: 0x05, REG_VSHUNT: 0x06,
+        REG_CAP_UV: 0x07, REG_CAP_OV: 0x08, REG_GPI_UV: 0x09, REG_GPI_OV: 0x0A,
+        REG_VIN_UV: 0x0B, REG_VIN_OV: 0x0C, REG_VCAP_UV: 0x0D, REG_VCAP_OV: 0x0E,
+        REG_VOUT_UV: 0x0F, REG_VOUT_OV: 0x10,
+        REG_IIN_OC_LIMIT: 0x11, REG_ICHG_UC_LIMIT: 0x12,
+        REG_TEMP_COLD: 0x13, REG_TEMP_HOT: 0x14, REG_ESR_HIGH: 0x15,
+        REG_CAP_LOW: 0x16, REG_CTL: 0x17, REG_NUM_CAPS: 0x1A,
+        REG_CHRG_STATUS: 0x1B, REG_MON_STATUS: 0x1C, REG_ALARM: 0x1D,
+        REG_MEAS_CAP: 0x1E, REG_MEAS_ESR: 0x1F, REG_MEAS_VCAP1: 0x20,
+        REG_MEAS_VCAP2: 0x21, REG_MEAS_VCAP3: 0x22, REG_MEAS_VCAP4: 0x23,
+        REG_MEAS_GPI: 0x24, REG_MEAS_VIN: 0x25, REG_MEAS_VCAP: 0x26,
+        REG_MEAS_VOUT: 0x27, REG_MEAS_IIN: 0x28, REG_MEAS_ICHG: 0x29,
+        REG_MEAS_DTEMP: 0x2A,
+    }
+    for value, expected in regs.items():
+        assert value == expected, f"register {expected:#04x} has value {value:#04x}"
+    assert CTL_CAP_ESR_MEAS == 0x0001
 
     # failure detection: bit 5 set -> failed
     status_failed = (1 << 5)
