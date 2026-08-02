@@ -178,6 +178,9 @@ def main():
                     )
                     writer = csv.writer(capture)
                     writer.writerow(["elapsed_s", "vcap", "v2", "est_s"])
+                    # Flush the bulk of dirty pages now while the stack is full;
+                    # shutdown()'s sync then only has the capture file to write.
+                    subprocess.Popen(["sync"])
                     log(f"External power lost. Sampling decay, grace {GRACE_PERIOD:.1f}s.")
                 elif state == STATE_GRACE:
                     if now - state_since >= GRACE_PERIOD:
