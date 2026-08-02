@@ -133,8 +133,7 @@ def main():
 
     def cleanup(signum=None, frame=None):
         log("Stopping UPS monitor.")
-        GPIO.cleanup()
-        sys.exit(0)
+        sys.exit(0)  # finally block owns GPIO.cleanup(); calling it here double-closes
 
     signal.signal(signal.SIGINT, cleanup)
     signal.signal(signal.SIGTERM, cleanup)
@@ -221,7 +220,10 @@ def main():
 
             time.sleep(POLL_INTERVAL)
     finally:
-        GPIO.cleanup()
+        try:
+            GPIO.cleanup()
+        except Exception:
+            pass  # lgpio raises on a closed handle; never crash mid-shutdown
         if capture is not None:
             capture.close()
 
