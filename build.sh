@@ -3,7 +3,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 PKG=ups-monitor
-VER=1.0.0
+VER="${VER:-1.0.0}"
 OUT="${PKG}_${VER}_all.deb"
 STAGE="$(mktemp -d)"
 trap 'rm -rf "$STAGE"' EXIT
