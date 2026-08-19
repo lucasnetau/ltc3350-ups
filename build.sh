@@ -19,6 +19,7 @@ Version: $VER
 Section: misc
 Priority: optional
 Architecture: all
+Maintainer: James Lucas <james@edgetelemetrics.com.au>
 Depends: python3 (>= 3.7), python3-smbus, i2c-tools
 Description: LTC3350 SuperCap UPS monitor for Raspberry Pi
 EOF
@@ -32,6 +33,7 @@ install -d -m 0750 /var/lib/ups
 systemctl daemon-reload
 systemctl enable ups.service ups-health.timer
 systemctl restart ups.service
+modprobe i2c-dev 2>/dev/null || true
 EOF
 
 cat > "$STAGE/DEBIAN/prerm" <<'EOF'
