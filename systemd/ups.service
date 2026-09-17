@@ -1,6 +1,5 @@
 [Unit]
 Description=Monitor SuperCAP UPS
-After=multi-user.target
 
 [Service]
 WorkingDirectory=/var/lib/ups/

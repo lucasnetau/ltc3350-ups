@@ -1,6 +1,5 @@
 [Unit]
 Description=SuperCAP UPS health check
-After=multi-user.target
 
 [Service]
 WorkingDirectory=/var/lib/ups/
